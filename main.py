@@ -4,8 +4,8 @@ from src.db_manager import DBmanager
 db_name = input("Введите название базы данных:\n")
 create_database(db_name)
 db_manager = DBmanager(db_name)
-user_input = input("Введите название компаний через запятую, для просмотра\n"
-                   "если не указать программа выдаст 10 первых\n").split(',')
+user_input = input("Введите название компаний через запятую,\n"
+                   "если не указать программа сохранит 10 первых в базу данных\n").split(',')
 user_interaction(user_input, db_name)
 print("Список компаний сохранен в базе данных\n")
 
