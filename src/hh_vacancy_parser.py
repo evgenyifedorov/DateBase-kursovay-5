@@ -10,27 +10,36 @@ class HHVacancyParsing:
     def get_request_employers(self):
         """
         Метод получения работодателей с hh.ru в файл json
-
         """
-        list_employers = []
-        if self.name is None:
-            params = {
-                "per_page": 10,
-                "sort_by": "by_vacancies_open"
-            }
-
-            response = requests.get("https://api.hh.ru/employers/", params)
-            return response.json()["items"]
-        else:
-            for i in self.name:
+        try:
+            list_employers = []
+            if self.name is None:
                 params = {
                     "per_page": 10,
-                    "sort_by": "by_vacancies_open",
-                    "text": i
+                    "sort_by": "by_vacancies_open"
                 }
+
                 response = requests.get("https://api.hh.ru/employers/", params)
-                list_employers.extend(response.json()["items"])
-        return list_employers
+                return response.json()["items"]
+            else:
+                for i in self.name:
+                    params = {
+                        "per_page": 10,
+                        "sort_by": "by_vacancies_open",
+                        "text": i
+                    }
+                    response = requests.get("https://api.hh.ru/employers/", params)
+                    list_employers.extend(response.json()["items"])
+            return list_employers
+        except requests.exceptions.HTTPError as errh:
+            print('Ошибка HTTP:')
+            print(errh.args[0])
+        except requests.exceptions.ReadTimeout as errrt:
+            print("Ошибка таймаута:", errrt)
+        except requests.exceptions.ConnectionError as conerr:
+            print('Ошибка подключения:', conerr)
+        except requests.exceptions.RequestException as errex:
+            print('Ошибка запроса:', errex)
 
     def get_employers_sort(self):
         """
@@ -53,8 +62,18 @@ class HHVacancyParsing:
             "employer_id": id_company,
             'only_with_salary': "true"
         }
-        response = requests.get("http://api.hh.ru/vacancies/", params)
-        return response.json()["items"]
+        try:
+            response = requests.get("http://api.hh.ru/vacancies/", params)
+            return response.json()["items"]
+        except requests.exceptions.HTTPError as errh:
+            print('Ошибка HTTP:')
+            print(errh.args[0])
+        except requests.exceptions.ReadTimeout as errrt:
+            print("Ошибка таймаута:", errrt)
+        except requests.exceptions.ConnectionError as conerr:
+            print('Ошибка подключения:', conerr)
+        except requests.exceptions.RequestException as errex:
+            print('Ошибка запроса:', errex)
 
     def get_all_vacancies(self):
         """
@@ -93,4 +112,4 @@ class HHVacancyParsing:
 
 if __name__ == '__main__':
     hh = HHVacancyParsing()
-    pprint(hh.filter_vacancy())
+    pprint(hh.get_employers_sort())
